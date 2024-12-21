@@ -28,7 +28,7 @@ app.post("/login", async (req, res) => {
                 "--disable-setuid-sandbox",
                 "--single-process",
                 "--disable-gpu",
-                "--disable-software-rasterizer", // additional flag
+                "--disable-software-rasterizer", 
             ],
             executablePath: process.env.CHROME_BIN || puppeteer.executablePath(), // Use Puppeteer's bundled Chromium
         });
