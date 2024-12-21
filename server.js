@@ -2,22 +2,13 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const puppeteer = require("puppeteer");
-const execSync = require("child_process").execSync;
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
-
-// Install Chromium dependencies on Render (this will run after each deployment)
-if (process.env.NODE_ENV === 'production') {
-    execSync("apt-get update && apt-get install -y chromium", { stdio: "inherit" });
-}
-
-// Set environment variable for Chromium executable
-process.env.CHROME_BIN = "/usr/bin/google-chrome-stable";
 
 // Endpoint to handle login and scraping
 app.post("/login", async (req, res) => {
@@ -28,7 +19,6 @@ app.post("/login", async (req, res) => {
     }
 
     try {
-        // Launch Puppeteer with the correct Chromium path and launch options
         const browser = await puppeteer.launch({
             headless: true,
             args: [
@@ -37,7 +27,7 @@ app.post("/login", async (req, res) => {
                 "--single-process",
                 "--disable-gpu",
             ],
-            executablePath: process.env.CHROME_BIN || puppeteer.executablePath(),
+            executablePath: puppeteer.executablePath(), // Use Puppeteer's bundled Chromium
         });
         const page = await browser.newPage();
 
