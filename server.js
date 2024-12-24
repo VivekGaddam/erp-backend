@@ -31,7 +31,7 @@ app.post("/login", async (req, res) => {
 
         const page = await browser.newPage();
 
-        await page.goto("https://erp.cbit.org.in/", { waitUntil: "networkidle2" });
+        await page.goto("https://erp.cbit.org.in/", {  timeout: 60000, waitUntil: "networkidle2" });
 
         // Input username
         await page.type("#txtUserName", username);
