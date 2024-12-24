@@ -3,20 +3,15 @@ FROM ghcr.io/puppeteer/puppeteer:20.8.0
 # Set working directory
 WORKDIR /app
 
-# Copy application files
-COPY package.json package-lock.json ./
-
-# Change ownership of files to the "pptruser"
-RUN chown -R pptruser:pptruser /app
-
-# Switch to "pptruser" (already the default user in the Puppeteer image)
-USER pptruser
+# Copy files and set ownership to pptruser during copy
+COPY --chown=pptruser:pptruser package.json package-lock.json ./
 
 # Install dependencies
+USER pptruser
 RUN npm install
 
-# Copy the rest of the application
-COPY . .
+# Copy the rest of the app
+COPY --chown=pptruser:pptruser . .
 
 # Start the application
-CMD ["node", "index.js"]
+CMD ["node", "server.js"]
