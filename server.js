@@ -14,7 +14,7 @@ const executablePath =
   process.env.NODE_ENV === "production"
     ? process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/google-chrome-stable"
     : puppeteer.executablePath(); // Default for development environment
-
+console.log("Puppeteer executable path:", executablePath);
 // Endpoint to handle login and scraping
 app.post("/login", async (req, res) => {
     const { username, password } = req.body;
