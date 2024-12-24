@@ -10,17 +10,6 @@ const PORT = process.env.PORT || 5000; // Using a fallback port in case PORT is 
 app.use(cors());
 app.use(bodyParser.json());
 
-// Serve static files from React build folder (only in production)
-if (process.env.NODE_ENV === "production") {
-    // Serve static files from the 'build' directory
-    app.use(express.static(path.join(__dirname, "build")));
-
-    // Serve index.html for any unknown route (this is for React routing)
-    app.get("*", (req, res) => {
-        res.sendFile(path.join(__dirname, "build", "index.html"));
-    });
-}
-
 // Endpoint to handle login and scraping
 app.post("/login", async (req, res) => {
     const { username, password } = req.body;
