@@ -1,10 +1,10 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const path = require("path"); // to handle static files
+const puppeteer = require("puppeteer"); // Import Puppeteer
 
 const app = express();
-const PORT = process.env.PORT || 5000; // Using a fallback port in case PORT is not set
+const PORT = process.env.PORT || 5000; 
 
 // Middleware
 app.use(cors());
@@ -19,7 +19,8 @@ app.post("/login", async (req, res) => {
     }
 
     try {
-        const browser = await puppeteer.launch({ headless: true });
+        // Launch Puppeteer
+        const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] }); // Include args for Render
         const page = await browser.newPage();
 
         await page.goto("https://erp.cbit.org.in/", { waitUntil: "networkidle2" });
@@ -72,7 +73,7 @@ app.post("/login", async (req, res) => {
 
         await browser.close();
 
-        // Check if we have valid attendance data
+        // Check if attendance data exists
         if (!attendanceData || attendanceData.length === 0) {
             return res.status(404).json({ error: "No attendance data found." });
         }
@@ -91,5 +92,5 @@ app.post("/login", async (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
