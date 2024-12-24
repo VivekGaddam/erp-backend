@@ -1,11 +1,16 @@
-# Use the official Puppeteer base image
 FROM ghcr.io/puppeteer/puppeteer:20.8.0
 
 # Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy application files
 COPY package.json package-lock.json ./
+
+# Change ownership of files to the "pptruser"
+RUN chown -R pptruser:pptruser /app
+
+# Switch to "pptruser" (already the default user in the Puppeteer image)
+USER pptruser
 
 # Install dependencies
 RUN npm install
@@ -13,8 +18,5 @@ RUN npm install
 # Copy the rest of the application
 COPY . .
 
-# Expose a port (optional, adjust if needed)
-EXPOSE 5000
-
 # Start the application
-CMD ["node", "server.js"]
+CMD ["node", "index.js"]
