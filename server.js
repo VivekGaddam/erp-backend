@@ -10,11 +10,10 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// Determine Puppeteer executablePath based on environment
-const isProduction = process.env.NODE_ENV === "production";
-const executablePath = isProduction
-    ? "/opt/render/project/.render/cache/puppeteer/chrome/linux-131.0.6778.204/chrome" // Render environment
-    : undefined; // Default for local environment
+const executablePath =
+  process.env.NODE_ENV === "production"
+    ? process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/google-chrome-stable"
+    : puppeteer.executablePath(); // Default for development environment
 
 // Endpoint to handle login and scraping
 app.post("/login", async (req, res) => {
@@ -25,12 +24,12 @@ app.post("/login", async (req, res) => {
     }
 
     try {
-        // Launch Puppeteer with conditional settings
         const browser = await puppeteer.launch({
             headless: true,
             args: ["--no-sandbox", "--disable-setuid-sandbox"],
-            executablePath, // Use the appropriate executablePath
+            executablePath,
         });
+
         const page = await browser.newPage();
 
         await page.goto("https://erp.cbit.org.in/", { waitUntil: "networkidle2" });
